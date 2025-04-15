@@ -1,0 +1,69 @@
+#algolia-search-app {
+    margin: 20px 0;
+}
+
+input[type="text"],
+select {
+    font-size: 16px;
+    padding: 8px;
+    margin: 5px 0;
+    width: 300px;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#search-results {
+    margin-top: 20px;
+}
+
+#search-results ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#search-results li {
+    margin: 5px 0;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+}
+
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.results-table th,
+.results-table td {
+    border: 1px solid #ddd;
+    text-align: left;
+    padding: 10px;
+}
+
+.results-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.results-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.results-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.results-table td {
+    white-space: pre-wrap; /* Handle multiline or long text gracefully */
+}
+
+.results-table em {
+    background-color: yellow; /* Highlight matching words */
+    font-weight: bold;
+}
