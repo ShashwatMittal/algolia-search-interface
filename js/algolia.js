@@ -16,9 +16,15 @@ document.addEventListener("DOMContentLoaded", function () {
     const searchQueryInput = document.getElementById("search-query");
     const searchResultsDiv = document.getElementById("search-results");
 
-    // Replace with your Algolia API key and Application ID
-    const ALGOLIA_APP_ID = "APP_ID"; // Add your Algolia App ID
-    const ALGOLIA_API_KEY = "API_KEY"; // Add your Algolia API Key
+    // Use settings from WordPress
+    const ALGOLIA_APP_ID = algoliaSettings.appId;
+    const ALGOLIA_API_KEY = algoliaSettings.searchApiKey;
+
+    // Validate settings
+    if (!ALGOLIA_APP_ID || !ALGOLIA_API_KEY) {
+        searchResultsDiv.innerHTML = "<p class='error'>Please configure Algolia settings in the WordPress admin panel.</p>";
+        return;
+    }
 
     async function fetchIndices() {
         try {
@@ -29,16 +35,32 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             });
             const data = await response.json();
-            if (data.items) {
+            
+            if (data.items && data.items.length > 0) {
+                // Clear existing options
+                indicesSelect.innerHTML = '';
+                
+                // Add a default option
+                const defaultOption = document.createElement("option");
+                defaultOption.value = "";
+                defaultOption.textContent = "Select an index";
+                defaultOption.disabled = true;
+                defaultOption.selected = true;
+                indicesSelect.appendChild(defaultOption);
+
+                // Add index options
                 data.items.forEach((index) => {
                     const option = document.createElement("option");
                     option.value = index.name;
                     option.textContent = index.name;
                     indicesSelect.appendChild(option);
                 });
+            } else {
+                searchResultsDiv.innerHTML = "<p class='error'>No indices found. Please check your Algolia settings.</p>";
             }
         } catch (error) {
             console.error("Error fetching indices:", error);
+            searchResultsDiv.innerHTML = "<p class='error'>Error fetching indices. Please check your Algolia settings.</p>";
         }
     }
 
@@ -46,8 +68,13 @@ document.addEventListener("DOMContentLoaded", function () {
         const indexName = indicesSelect.value;
         const query = searchQueryInput.value;
 
-        if (!indexName || !query) {
-            searchResultsDiv.innerHTML = "<p>Please select an index and enter a query.</p>";
+        if (!indexName) {
+            searchResultsDiv.innerHTML = "<p class='error'>Please select an index.</p>";
+            return;
+        }
+
+        if (!query) {
+            searchResultsDiv.innerHTML = "<p>Please enter a search query.</p>";
             return;
         }
 
@@ -88,14 +115,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     const titleCell = document.createElement("td");
                     titleCell.innerHTML = hit.highlightResult?.post_title?.value
                         ? hit.highlightResult.post_title.value
-                        : hit.post_title || "N/A"; // Fallback to normal title if highlight is unavailable
+                        : hit.post_title || "N/A";
                     row.appendChild(titleCell);
 
                     // Post Excerpt (highlight matching words)
                     const excerptCell = document.createElement("td");
                     excerptCell.innerHTML = hit.highlightResult?.post_excerpt?.value
                         ? hit.highlightResult.post_excerpt.value
-                        : hit.post_excerpt || "N/A"; // Fallback to normal excerpt if highlight is unavailable
+                        : hit.post_excerpt || "N/A";
                     row.appendChild(excerptCell);
 
                     // Taxonomies (process object to readable format)
@@ -104,7 +131,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         taxonomiesCell.textContent = JSON.stringify(hit.taxonomies, null, 2)
                             .replaceAll("{", "")
                             .replaceAll("}", "")
-                            .replaceAll(",", ", "); // Convert object to easier-to-read string
+                            .replaceAll(",", ", ");
                     } else {
                         taxonomiesCell.textContent = "N/A";
                     }
@@ -132,10 +159,17 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         } catch (error) {
             console.error("Error performing search:", error);
-            searchResultsDiv.innerHTML = "<p>An error occurred during the search.</p>";
+            searchResultsDiv.innerHTML = "<p class='error'>An error occurred during the search. Please check your Algolia settings.</p>";
         }
     }
 
+    // Fetch indices when the page loads
     fetchIndices();
+
     searchButton.addEventListener("click", performSearch);
+    searchQueryInput.addEventListener("keypress", function(e) {
+        if (e.key === "Enter") {
+            performSearch();
+        }
+    });
 });
