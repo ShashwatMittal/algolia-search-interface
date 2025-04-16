@@ -1,11 +1,6 @@
 {
     "name": "shashwatmittal/algolia-search-interface",
     "description": "A PHP interface for Algolia search integration",
-    "type": "library",
-    "license": "MIT",
-    "autoload": {
-        "psr-4": {
-            "ShashwatMittal\\AlgoliaSearchInterface\\": "src/"
-        }
-    }
+    "type": "wordpress-plugin",
+    "license": "MIT"
 }
