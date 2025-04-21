@@ -12,14 +12,6 @@ if (!defined('ABSPATH')) {
 
 // Define constants
 define('ALGOLIA_SEARCH_INTERFACE_VERSION', '1.0.0');
-define('ALGOLIA_SEARCH_INTERFACE_PLUGIN_DIR', plugin_dir_path(__FILE__));
-define('ALGOLIA_SEARCH_INTERFACE_PLUGIN_URL', plugin_dir_url(__FILE__));
-
-// Include required files
-require_once ALGOLIA_SEARCH_INTERFACE_PLUGIN_DIR . 'includes/class-algolia-settings.php';
-
-// Initialize settings
-$algolia_settings = new Algolia_Settings();
 
 // Add a new admin page for the search interface
 add_action('admin_menu', 'algolia_search_interface_menu');
@@ -132,9 +124,11 @@ function algolia_enqueue_scripts() {
     );
 
     // Localize script with settings
-    $settings = get_option('algolia_search_settings', array());
+    $algolia_application_id = get_option('algolia_application_id', '');
+    $algolia_search_api_key = get_option('algolia_search_api_key', '');
+
     wp_localize_script('algolia-search-interface-js', 'algoliaSettings', array(
-        'appId' => $settings['algolia_app_id'] ?? '',
-        'searchApiKey' => $settings['algolia_search_api_key'] ?? '',
+        'appId' => $algolia_application_id,
+        'searchApiKey' => $algolia_search_api_key,
     ));
 }
