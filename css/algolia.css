@@ -1,69 +1,145 @@
 #algolia-search-app {
     margin: 20px 0;
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+}
+
+#algolia-search-app h2 {
+    padding: 12px 15px;
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.4;
+    border-bottom: 1px solid #ccd0d4;
+    background: #f8f9f9;
+}
+
+.search-container {
+    padding: 15px;
+    background: #fff;
+    border-bottom: 1px solid #ccd0d4;
+}
+
+.search-container .actions {
+    margin: 10px 0px;
+}
+
+.search-row {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.search-field {
+    flex: 1;
+}
+
+.search-field label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 13px;
+    color: #1d2327;
+    font-weight: 600;
 }
 
 input[type="text"],
 select {
-    font-size: 16px;
-    padding: 8px;
-    margin: 5px 0;
-    width: 300px;
+    font-size: 13px;
+    padding: 6px 8px;
+    margin: 0;
+    width: 100%;
+    border: 1px solid #8c8f94;
+    border-radius: 3px;
+    box-shadow: 0 0 0 transparent;
+    transition: border-color .15s ease-in-out;
+}
+
+input[type="text"]:focus,
+select:focus {
+    border-color: #2271b1;
+    box-shadow: 0 0 0 1px #2271b1;
+    outline: 2px solid transparent;
 }
 
 button {
-    padding: 10px 20px;
-    font-size: 16px;
+    margin: 15px;
+    padding: 4px 8px;
+    font-size: 13px;
+    line-height: 2.15384615;
+    min-height: 30px;
     cursor: pointer;
+    background: #2271b1;
+    border: 1px solid #2271b1;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 3px;
+    white-space: nowrap;
+    box-shadow: 0 0 0 transparent;
+}
+
+button:hover {
+    background: #135e96;
+    border-color: #135e96;
 }
 
 #search-results {
-    margin-top: 20px;
-}
-
-#search-results ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-#search-results li {
-    margin: 5px 0;
-    padding: 10px;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
+    margin: 0;
+    padding: 15px;
 }
 
 .results-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
-    font-size: 14px;
+    font-size: 13px;
+    line-height: 1.5em;
 }
 
 .results-table th,
 .results-table td {
-    border: 1px solid #ddd;
+    padding: 8px 10px;
     text-align: left;
-    padding: 10px;
+    border-bottom: 1px solid #ccd0d4;
+    vertical-align: middle;
 }
 
 .results-table th {
-    background-color: #f4f4f4;
-    font-weight: bold;
-}
-
-.results-table tr:nth-child(even) {
-    background-color: #f9f9f9;
+    background: #f0f0f1;
+    font-weight: 600;
+    color: #1d2327;
+    border-bottom: 1px solid #c3c4c7;
 }
 
 .results-table tr:hover {
-    background-color: #f1f1f1;
+    background-color: #f6f7f7;
 }
 
 .results-table td {
-    white-space: pre-wrap; /* Handle multiline or long text gracefully */
+    white-space: pre-wrap;
+    color: #50575e;
 }
 
 .results-table em {
-    background-color: yellow; /* Highlight matching words */
-    font-weight: bold;
+    background-color: #ffeb3b;
+    font-style: normal;
+    font-weight: 600;
+}
+
+.results-table td a {
+    color: #2271b1;
+    text-decoration: none;
+}
+
+.results-table td a:hover {
+    color: #135e96;
+    text-decoration: underline;
+}
+
+/* WordPress admin notice styling for errors */
+.error {
+    margin: 5px 0 15px;
+    padding: 12px;
+    background: #f8d7da;
+    border-left: 4px solid #dc3545;
+    box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+    color: #721c24;
 }

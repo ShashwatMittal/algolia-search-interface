@@ -1,19 +1,43 @@
 document.addEventListener("DOMContentLoaded", function () {
     const appDiv = document.getElementById("algolia-search-app");
     appDiv.innerHTML = `
-        <h2>Search Interface</h2>
-        <label for="indices">Select Index:</label>
-        <select id="indices"></select>
-        <br><br>
-        <label for="search-query">Search Query:</label>
-        <input type="text" id="search-query" placeholder="Enter your query">
-        <button id="search-button">Search</button>
-        <div id="search-results"></div>
+        <div class="wrap">
+            <h2>Algolia Search Interface</h2>
+            <div class="search-container">
+                <div class="actions">
+                    <label for="indices">Select Index:</label>
+                    <select id="indices"></select>
+                </div>
+                <div class="search-row">
+                    <div class="search-field">
+                        <label for="search-query">Search Query:</label>
+                        <input type="text" id="search-query" placeholder="Enter your query" class="regular-text">
+                    </div>
+                    <div class="search-field">
+                        <label for="search-attribute">Search in:</label>
+                        <select id="search-attribute" class="regular-text">
+                            <option value="">All fields</option>
+                            <option value="post_title">Post Title</option>
+                            <option value="taxonomies.author">Post Author</option>
+                            <option value="post_excerpt">Post Excerpt</option>
+                            <option value="post_content">Post Content</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="tablenav top">
+                    <div class="alignleft actions">
+                        <button id="search-button" class="button button-primary">Search</button>
+                    </div>
+                </div>
+            </div>
+            <div id="search-results"></div>
+        </div>
     `;
 
     const indicesSelect = document.getElementById("indices");
     const searchButton = document.getElementById("search-button");
     const searchQueryInput = document.getElementById("search-query");
+    const searchAttributeSelect = document.getElementById("search-attribute");
     const searchResultsDiv = document.getElementById("search-results");
 
     // Use settings from WordPress
@@ -52,7 +76,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 data.items.forEach((index) => {
                     const option = document.createElement("option");
                     option.value = index.name;
-                    option.textContent = index.name;
+                    option.textContent = index.name.replace("wp_posts_", "").charAt(0).toUpperCase() + index.name.replace("wp_posts_", "").slice(1);
                     indicesSelect.appendChild(option);
                 });
             } else {
@@ -67,6 +91,7 @@ document.addEventListener("DOMContentLoaded", function () {
     async function performSearch() {
         const indexName = indicesSelect.value;
         const query = searchQueryInput.value;
+        const searchAttribute = searchAttributeSelect.value;
 
         if (!indexName) {
             searchResultsDiv.innerHTML = "<p class='error'>Please select an index.</p>";
@@ -79,6 +104,10 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         try {
+            const searchParams = {
+                query,
+                restrictSearchableAttributes: searchAttribute ? [searchAttribute] : undefined
+            };
             const response = await fetch(`https://${ALGOLIA_APP_ID}-dsn.algolia.net/1/indexes/${indexName}/query`, {
                 method: "POST",
                 headers: {
@@ -86,7 +115,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     "X-Algolia-Application-Id": ALGOLIA_APP_ID,
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ query })
+                body: JSON.stringify(searchParams)
             });
             const data = await response.json();
 
@@ -139,7 +168,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     // Post ID
                     const postIdCell = document.createElement("td");
-                    postIdCell.textContent = hit.post_id ? hit.post_id : "N/A";
+                    if (hit.post_id) {
+                        const editLink = document.createElement("a");
+                        editLink.href = `${window.location.origin}/wp-admin/post.php?post=${hit.post_id}&action=edit`;
+                        editLink.textContent = hit.post_id;
+                        editLink.target = "_blank";
+                        editLink.title = "Edit post in WordPress admin";
+                        postIdCell.appendChild(editLink);
+                    } else {
+                        postIdCell.textContent = "N/A";
+                    }
                     row.appendChild(postIdCell);
 
                     // Post Type
