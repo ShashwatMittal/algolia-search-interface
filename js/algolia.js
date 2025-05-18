@@ -127,7 +127,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Add table headers
                 const thead = document.createElement("thead");
                 const headerRow = document.createElement("tr");
-                ["Post Title", "Post Excerpt", "Taxonomies", "Post ID", "Post Type"].forEach((header) => {
+                ["Post Title", "Post Excerpt", "Post Date", "Taxonomies", "Post ID", "Post Type"].forEach((header) => {
                     const th = document.createElement("th");
                     th.textContent = header;
                     headerRow.appendChild(th);
@@ -139,20 +139,23 @@ document.addEventListener("DOMContentLoaded", function () {
                 const tbody = document.createElement("tbody");
                 data.hits.forEach((hit) => {
                     const row = document.createElement("tr");
-
                     // Post Title (highlight matching words)
                     const titleCell = document.createElement("td");
-                    titleCell.innerHTML = hit.highlightResult?.post_title?.value
-                        ? hit.highlightResult.post_title.value
+                    titleCell.innerHTML = hit._highlightResult?.post_title?.value
+                        ? hit._highlightResult.post_title.value
                         : hit.post_title || "N/A";
                     row.appendChild(titleCell);
 
                     // Post Excerpt (highlight matching words)
                     const excerptCell = document.createElement("td");
-                    excerptCell.innerHTML = hit.highlightResult?.post_excerpt?.value
-                        ? hit.highlightResult.post_excerpt.value
+                    excerptCell.innerHTML = hit._highlightResult?.post_excerpt?.value
+                        ? hit._highlightResult.post_excerpt.value
                         : hit.post_excerpt || "N/A";
                     row.appendChild(excerptCell);
+
+                    const postDateCell = document.createElement("td");
+                    postDateCell.textContent = hit.post_date_formatted ? hit.post_date_formatted : "N/A";
+                    row.appendChild(postDateCell);
 
                     // Taxonomies (process object to readable format)
                     const taxonomiesCell = document.createElement("td");

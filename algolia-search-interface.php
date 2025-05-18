@@ -10,9 +10,6 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
-// Define constants
-define('ALGOLIA_SEARCH_INTERFACE_VERSION', '1.0.0');
-
 // Add a new admin page for the search interface
 add_action('admin_menu', 'algolia_search_interface_menu');
 function algolia_search_interface_menu() {
@@ -46,7 +43,7 @@ function algolia_enqueue_scripts() {
         'algolia-search-interface-js',
         plugins_url('/js/algolia.js', __FILE__),
         ['jquery'],
-        ALGOLIA_SEARCH_INTERFACE_VERSION,
+        filemtime(plugin_dir_path(__FILE__) . 'js/algolia.js'),
         true
     );
 
@@ -54,7 +51,7 @@ function algolia_enqueue_scripts() {
         'algolia-search-interface-css',
         plugins_url('/css/algolia.css', __FILE__),
         array(),
-        ALGOLIA_SEARCH_INTERFACE_VERSION
+        filemtime(plugin_dir_path(__FILE__) . 'css/algolia.css')
     );
 
     // Localize script with settings
